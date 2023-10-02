@@ -7,109 +7,292 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Calculator',
+      theme: ThemeData(),
+      home: const Calculator(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class Calculator extends StatefulWidget {
+  const Calculator({super.key});
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Calculator> createState() => _CalculatorState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _CalculatorState extends State<Calculator> {
+  // final List extraButtons = ['AC', 'DE', 'LO', 'RA'];
+  final List primaryButtons = ['AC', '+/-', '%', '/'];
+  final List secundaryButtons = ['7', '8', '9', 'x'];
+  final List thirdsButtons = ['4', '5', '6', '-'];
+  final List fourthButtons = ['1', '2', '3', '+'];
+  final List finalButtons = ['.', '='];
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  Widget calcbutton(String btntxt, Color btncolor, Color txtcolor) {
+    return Container(
+      padding: const EdgeInsets.all(6),
+      width: 90,
+      height: 90,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: btncolor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(60.0),
+          ),
+        ),
+        child: Text(
+          btntxt,
+          style: TextStyle(
+            fontSize: 35,
+            color: txtcolor,
+          ),
+        ),
+        onPressed: () {
+          calculation(btntxt);
+        },
+      ),
+    );
+  }
+
+  Widget constructRow(list, dynamic opccionalColor1, dynamic opccionalColor2) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        for (int i = 0; i < list.length; i++)
+          list.length == 4
+              ? calcbutton(
+                  list[i],
+                  opccionalColor1 != Colors.grey
+                      ? i == 3
+                          ? Colors.blue
+                          : opccionalColor1
+                      : opccionalColor1,
+                  opccionalColor2 != Colors.grey
+                      ? i == 3
+                          ? Colors.black
+                          : opccionalColor2
+                      : opccionalColor2,
+                )
+              : calcbutton(
+                  list[i],
+                  opccionalColor1 != Colors.grey
+                      ? i == 1
+                          ? Colors.blue
+                          : opccionalColor1
+                      : opccionalColor1,
+                  opccionalColor2 != Colors.grey
+                      ? i == 1
+                          ? Colors.white
+                          : opccionalColor2
+                      : opccionalColor2,
+                ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final List listsButtons = [
+      // extraButtons,
+      primaryButtons,
+      secundaryButtons,
+      thirdsButtons,
+      fourthButtons,
+    ];
+
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text('CalculATO(r)'),
+        backgroundColor: Colors.black,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            SizedBox(
+              height: 150,
+              child: ListView(
+                reverse: true,
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.all(5),
+                children: [
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        text,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: double.parse(text) == 0
+                              ? Colors.white
+                              : double.parse(text) > 0
+                                  ? Colors.green
+                                  : Colors.red,
+                          fontSize: 100,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            for (int i = 0; i < listsButtons.length; i++)
+              i == 0
+                  ? constructRow(listsButtons[i], Colors.grey, Colors.black)
+                  : constructRow(
+                      listsButtons[i], Colors.grey[850], Colors.white),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 0, bottom: 0, left: 10, right: 10),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[850],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(60.0),
+                      ),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.only(
+                          top: 15, bottom: 15, right: 105, left: 20),
+                      child: Text(
+                        '0',
+                        style: TextStyle(
+                          fontSize: 35,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      calculation('0');
+                    },
+                  ),
+                ),
+                constructRow(finalButtons, Colors.grey[850], Colors.white)
+              ],
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  String text = '0';
+  double numOne = 0;
+  double numTwo = 0;
+  String result = '';
+  String finalResult = '';
+  String opr = '';
+  String preOpr = '';
+
+  void calculation(btnText) {
+    if (btnText == 'AC') {
+      text = '0';
+      numOne = 0;
+      numTwo = 0;
+      result = '';
+      finalResult = '0';
+      opr = '';
+      preOpr = '';
+    } else if (opr == '=' && btnText == '=') {
+      if (preOpr == '+') {
+        finalResult = add();
+      } else if (preOpr == '-') {
+        finalResult = sub();
+      } else if (preOpr == 'x') {
+        finalResult = mul();
+      } else if (preOpr == '/') {
+        finalResult = div();
+      }
+    } else if (btnText == '+' ||
+        btnText == '-' ||
+        btnText == 'x' ||
+        btnText == '/' ||
+        btnText == '=') {
+      if (numOne == 0) {
+        result == '' ? null : numOne = double.parse(result);
+      } else {
+        result == '' ? null : numTwo = double.parse(result);
+      }
+
+      if (opr == '+') {
+        finalResult = add();
+      } else if (opr == '-') {
+        finalResult = sub();
+      } else if (opr == 'x') {
+        finalResult = mul();
+      } else if (opr == '/') {
+        finalResult = div();
+      } else if (opr == '+/-') {
+        finalResult = result;
+      }
+
+      preOpr = opr;
+      opr = btnText;
+      result = '';
+    } else if (btnText == '%') {
+      result = (numOne / 100).toString();
+      finalResult = doesContainDecimal(result);
+    } else if (btnText == '.') {
+      result.toString().contains('.') ? null : result = '${result.toString()}.';
+      finalResult = result;
+    } else if (btnText == '+/-') {
+      result.toString().startsWith('-')
+          ? result = result.toString().substring(1)
+          : result = '-${result.toString()}';
+      finalResult = result;
+    } else if (btnText == 'DE') {
+    } else if (btnText == 'LO') {
+    } else if (btnText == 'RA') {
+    } else if (btnText == '^2') {
+    } else {
+      result = result + btnText;
+      finalResult = result;
+    }
+
+    setState(() {
+      text = finalResult;
+    });
+  }
+
+  String add() {
+    result = (numOne + numTwo).toString();
+    numOne = double.parse(result);
+    return doesContainDecimal(result);
+  }
+
+  String sub() {
+    result = (numOne - numTwo).toString();
+    numOne = double.parse(result);
+    return doesContainDecimal(result);
+  }
+
+  String mul() {
+    result = (numOne * numTwo).toString();
+    numOne = double.parse(result);
+    return doesContainDecimal(result);
+  }
+
+  String div() {
+    result = (numOne / numTwo).toString();
+    numOne = double.parse(result);
+    return doesContainDecimal(result);
+  }
+
+  String doesContainDecimal(dynamic result) {
+    if (result.toString().contains('.')) {
+      List<String> splitDecimal = result.toString().split('.');
+      if ((double.parse(splitDecimal[1]) < 0)) {
+        return result = splitDecimal[0].toString();
+      }
+    }
+    return result;
   }
 }
